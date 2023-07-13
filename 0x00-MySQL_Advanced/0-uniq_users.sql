@@ -1,5 +1,7 @@
--- Creates a table users with `id`, `email` and `name` fields
+-- script that creates a table users with follwing fields
+-- id, email, name
 CREATE TABLE IF NOT EXISTS users (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    name VARCHAR(255)) 
+	id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	email varchar(255) NOT NULL UNIQUE,
+	name varchar(255)
+)
