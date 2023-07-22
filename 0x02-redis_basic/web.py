@@ -7,6 +7,7 @@ import requests
 from functools import wraps
 from typing import Callable
 
+
 def track_get_page(fn: Callable) -> Callable:
     """ Decorator for get_page
     """
@@ -25,6 +26,7 @@ def track_get_page(fn: Callable) -> Callable:
         client.set(f'{url}', response, 10)
         return response
     return wrapper
+
 
 @track_get_page
 def get_page(url: str) -> str:
