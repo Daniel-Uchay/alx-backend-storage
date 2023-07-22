@@ -7,7 +7,6 @@ import requests
 from functools import wraps
 from typing import Callable
 
-
 def track_get_page(fn: Callable) -> Callable:
     """ Decorator for get_page
     """
@@ -27,10 +26,13 @@ def track_get_page(fn: Callable) -> Callable:
         return response
     return wrapper
 
-
 @track_get_page
 def get_page(url: str) -> str:
     """ Makes a http request to a given endpoint
     """
     response = requests.get(url)
     return response.text
+
+if __name__ == "__main__":
+    url = "http://slowwly.robertomurray.co.uk/delay/1000/url/http://www.example.com"  # Simulated slow response
+    print(get_page(url))
