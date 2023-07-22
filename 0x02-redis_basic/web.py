@@ -32,7 +32,3 @@ def get_page(url: str) -> str:
     """
     response = requests.get(url)
     return response.text
-
-if __name__ == "__main__":
-    url = "http://slowwly.robertomurray.co.uk/delay/1000/url/http://www.example.com"  # Simulated slow response
-    print(get_page(url))
