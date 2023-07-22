@@ -1,36 +1,51 @@
 #!/usr/bin/env python3
+"""web module
 """
-Caching request module
-"""
-import redis
-import requests
 from functools import wraps
 from typing import Callable
+import redis
+import requests
+
+_redis = redis.Redis()
+_redis.flushdb()
 
 
-def track_get_page(fn: Callable) -> Callable:
-    """ Decorator for get_page
+def count_requests(method: Callable) -> Callable:
+    """count_requests function
+
+    Args:
+        method (Callable): method
+
+    Returns:
+        Callable: wrapper
     """
-    @wraps(fn)
-    def wrapper(url: str) -> str:
-        """ Wrapper that:
-            - check whether a url's data is cached
-            - tracks how many times get_page is called
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        """wrapper function
+
+        Returns:
+            [type]: wrapper
         """
-        client = redis.Redis()
-        client.incr(f'count:{url}')
-        cached_page = client.get(f'{url}')
-        if cached_page:
-            return cached_page.decode('utf-8')
-        response = fn(url)
-        client.set(f'{url}', response, 10)
+        url = args[0]
+        cached = _redis.get(f"cached:{url}")
+        if cached:
+            return cached.decode("utf-8")
+        response = method(*args, **kwargs)
+        _redis.incr(f"count:{url}")
+        _redis.setex(f"cached:{url}", 10, response)
         return response
     return wrapper
 
 
-@track_get_page
+@count_requests
 def get_page(url: str) -> str:
-    """ Makes a http request to a given endpoint
+    """get_page function
+
+    Args:
+        url (str): url
+
+    Returns:
+        str: response
     """
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
     return response.text
